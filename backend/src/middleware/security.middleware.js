@@ -61,19 +61,25 @@ class SecurityMiddleware {
   }
   
   // Middleware para validar el origen de la petición
-  static validateOrigin(req, res, next) {
-    const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000'];
-    const origin = req.headers.origin || req.headers.referer;
-    
-    if (!origin || !allowedOrigins.some(allowed => origin.startsWith(allowed))) {
-      return res.status(403).json({ 
-        error: 'Access denied', 
-        code: 'INVALID_ORIGIN' 
-      });
-    }
-    
-    next();
+ static validateOrigin(req, res, next) {
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://drive-video-proxy.vercel.app',
+    'https://hoppscotch.io'
+  ];
+  const origin = req.headers.origin || req.headers.referer;
+
+  if (!origin || !allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+    return res.status(403).json({ 
+      error: 'Access denied', 
+      code: 'INVALID_ORIGIN' 
+    });
   }
+
+  next();
+}
+
   
   // Middleware para validar headers básicos
 
