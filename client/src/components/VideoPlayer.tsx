@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import 'plyr/dist/plyr.css';
+import { useState, useEffect, useRef } from 'react';
 
 interface VideoPlayerProps {
   videoId: string;
@@ -8,12 +9,24 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 
 const VideoPlayer = ({ videoId }: VideoPlayerProps) => {
   const [secureToken, setSecureToken] = useState<string | null>(null);
+  const playerRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
-    if (videoId) {
-      generateSecureToken();
-    }
+    if (videoId) generateSecureToken();
   }, [videoId]);
+
+  useEffect(() => {
+    if (secureToken && playerRef.current) {
+      // Import Plyr dinámicamente solo en cliente (evita errores en SSR)
+      import('plyr').then((PlyrModule) => {
+        const Plyr = PlyrModule.default;
+        new Plyr(playerRef.current!, {
+          controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+          autoplay: false,
+        });
+      });
+    }
+  }, [secureToken]);
 
   const generateSecureToken = async () => {
     try {
@@ -29,7 +42,7 @@ const VideoPlayer = ({ videoId }: VideoPlayerProps) => {
         console.error('No se recibió token');
       }
     } catch (error) {
-      console.error('Token generation failed:', error);
+      console.error('Error generando token:', error);
     }
   };
 
@@ -40,7 +53,13 @@ const VideoPlayer = ({ videoId }: VideoPlayerProps) => {
   return (
     <div className="video-player">
       {secureToken ? (
-        <video controls width="100%" src={videoUrl}>
+        <video
+          ref={playerRef}
+          className="plyr__video-embed"
+          controls
+          width="100%"
+        >
+          <source src={videoUrl} type="video/mp4" />
           Tu navegador no soporta video.
         </video>
       ) : (
