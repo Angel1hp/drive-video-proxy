@@ -2,9 +2,11 @@ const PORT = process.env.PORT || 4000;
 
 const CORS_OPTIONS = {
   origin: [
-    'http://localhost:5173', // Vite dev server
-    'http://localhost:3000', // Proxy server
-    'http://localhost:4000', // Backend server
+    'http://localhost:5173',                       // Vite dev server local
+    'http://localhost:3000',                       // Proxy local
+    'http://localhost:4000',                       // Backend local
+    'https://drive-video-proxy.vercel.app',        // ✅ Tu frontend en Vercel
+    'https://hoppscotch.io'                        // ✅ Para pruebas desde Hoppscotch
   ],
   credentials: true,
   methods: ['GET', 'POST', 'HEAD', 'OPTIONS'],
