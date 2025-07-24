@@ -1,37 +1,41 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 
 interface VideoPlayerProps {
-  videoId: string
+  videoId: string;
 }
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const VideoPlayer = ({ videoId }: VideoPlayerProps) => {
-  const [secureToken, setSecureToken] = useState<string | null>(null)
+  const [secureToken, setSecureToken] = useState<string | null>(null);
 
   useEffect(() => {
     if (videoId) {
-      generateSecureToken()
+      generateSecureToken();
     }
-  }, [videoId])
+  }, [videoId]);
 
   const generateSecureToken = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/generate-token', {
+      const response = await fetch(`${API_BASE}/generate-token`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoId: videoId })
-      })
-      const data = await response.json()
-      if (data.success) {
-        setSecureToken(data.token)
+        body: JSON.stringify({ videoId })
+      });
+      const data = await response.json();
+      if (data.token) {
+        setSecureToken(data.token);
+      } else {
+        console.error('No se recibió token');
       }
     } catch (error) {
-      console.error('Token generation failed:', error)
+      console.error('Token generation failed:', error);
     }
-  }
+  };
 
-  const videoUrl = secureToken 
-    ? `http://localhost:3000/api/video/${secureToken}`
-    : `http://localhost:3000/api/video/${videoId}`
+  const videoUrl = secureToken
+    ? `${API_BASE}/secure-stream/${secureToken}`
+    : '';
 
   return (
     <div className="video-player">
@@ -43,7 +47,7 @@ const VideoPlayer = ({ videoId }: VideoPlayerProps) => {
         <div className="loading">Cargando...</div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default VideoPlayer
+export default VideoPlayer;
