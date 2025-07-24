@@ -1,6 +1,7 @@
 const VIDEO_CATALOG = {
-  'video1': '1eHv5dhXZkOJhnLUzr4RZUY7Bo9pOkkWp'
+  'video1': '1Huq_xErUNCpEM7R76-pkAm6XlEvHP5lk'
 };
+
 
 global.VIDEO_CATALOG = VIDEO_CATALOG;
 
